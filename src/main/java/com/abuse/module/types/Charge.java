@@ -1,8 +1,7 @@
-package com.abuse.module;
+package com.abuse.module.types;
 
 public enum Charge implements Type {
-    TIME
-    , ACCOUNT
+    ACCOUNT
     , AMOUNT
     , BANK_ACCOUNT
 }

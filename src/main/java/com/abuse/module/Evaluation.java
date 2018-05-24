@@ -1,18 +1,24 @@
 package com.abuse.module;
 
 public enum Evaluation {
-    LOWER_THAN_AND_EQUALS {
+    EQUALS {
         @Override
-        boolean match(long source, Long target) {
-            return source >= target.longValue();
+        boolean match(Long source, Long target) {
+            return source.longValue() == target.longValue();
+        }
+    }
+    , LOWER_THAN_AND_EQUALS {
+        @Override
+        boolean match(Long source, Long target) {
+            return source.longValue() >= target.longValue();
         }
     }
     , GREATER_THAN_AND_EQUALS {
         @Override
-        boolean match(long source, Long target) {
-            return source <= target.longValue();
+        boolean match(Long source, Long target) {
+            return source.longValue() <= target.longValue();
         }
     }
     ;
-    abstract boolean match(long source, Long target);
+    abstract boolean match(Long source, Long target);
 }

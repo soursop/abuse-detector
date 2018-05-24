@@ -1,4 +1,4 @@
-package com.abuse.log;
+package com.abuse.event;
 
 
 public interface Send extends Move {
