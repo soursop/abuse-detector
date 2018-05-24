@@ -10,9 +10,9 @@ import java.util.Map;
 public enum Conjunction {
     AND {
         @Override
-        public boolean matchBy(Map<Rule, Long> result, Rule[] rules) {
+        public boolean matchBy(Map<Frequencible, Long> result, Frequencible[] rules) {
             long now = new Date().getTime();
-            for (Rule rule : rules) {
+            for (Frequencible rule : rules) {
                 Long time = result.get(rule);
                 if (time == null) {
                     return false;
@@ -26,7 +26,7 @@ public enum Conjunction {
         }
     }, AFTER {
         @Override
-        public boolean matchBy(Map<Rule, Long> result, Rule[] rules) {
+        public boolean matchBy(Map<Frequencible, Long> result, Frequencible[] rules) {
             long now = new Date().getTime();
             for (int i = 0; i < rules.length; i++) {
                 Long time = result.get(rules[i]);
@@ -38,6 +38,7 @@ public enum Conjunction {
                     return false;
                 }
                 if (i > 0 && time.longValue() < result.get(rules[i - 1]).longValue()) {
+                    result.remove(rules[i]);
                     return false;
                 }
             }
@@ -46,5 +47,5 @@ public enum Conjunction {
     }
     ;
 
-    public abstract boolean matchBy(Map<Rule, Long> result, Rule[] rules);
+    public abstract boolean matchBy(Map<Frequencible, Long> result, Frequencible[] rules);
 }

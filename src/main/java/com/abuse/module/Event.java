@@ -24,6 +24,10 @@ public class Event implements Comparable<Event> {
         }
     }
 
+    public Map<Enum<?>, Long> getLogs() {
+        return logs;
+    }
+
     @Override
     public String toString() {
         return source.getSimpleName() + "{" +
