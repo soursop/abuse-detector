@@ -1,7 +1,10 @@
 package com.abuse.module;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Queue;
+import java.util.function.Predicate;
 
 /**
  * @author soursop
@@ -10,15 +13,9 @@ import java.util.Map;
 public enum Conjunction {
     AND {
         @Override
-        public boolean matchBy(Map<Frequencible, Long> result, Frequencible[] rules) {
-            long now = new Date().getTime();
-            for (Frequencible rule : rules) {
-                Long time = result.get(rule);
-                if (time == null) {
-                    return false;
-                }
-                if (!rule.valid(now, time)) {
-                    result.remove(rule);
+        public boolean matchBy(Map<Rulable, Queue<LocalDateTime>> result, Rulable[] rules) {
+            for (Rulable rule : rules) {
+                if (result.containsKey(rule) == false) {
                     return false;
                 }
             }
@@ -26,19 +23,13 @@ public enum Conjunction {
         }
     }, AFTER {
         @Override
-        public boolean matchBy(Map<Frequencible, Long> result, Frequencible[] rules) {
-            long now = new Date().getTime();
+        public boolean matchBy(Map<Rulable, Queue<LocalDateTime>> result, Rulable[] rules) {
             for (int i = 0; i < rules.length; i++) {
-                Long time = result.get(rules[i]);
-                if (time == null) {
+                Queue<LocalDateTime> times = result.get(rules[i]);
+                if (times == null) {
                     return false;
                 }
-                if (!rules[i].valid(now, time)) {
-                    result.remove(rules[i]);
-                    return false;
-                }
-                if (i > 0 && time.longValue() < result.get(rules[i - 1]).longValue()) {
-                    result.remove(rules[i]);
+                if (i > 0 && isOrdered(times, result.get(rules[i - 1]))) {
                     return false;
                 }
             }
@@ -47,5 +38,14 @@ public enum Conjunction {
     }
     ;
 
-    public abstract boolean matchBy(Map<Frequencible, Long> result, Frequencible[] rules);
+    private static boolean isOrdered(Queue<LocalDateTime> before, Queue<LocalDateTime> after) {
+        final LocalDateTime last = before.peek();
+        Iterator<LocalDateTime> iterator = after.iterator();
+        while (iterator.hasNext() && last.isAfter(iterator.next())) {
+            iterator.remove();
+        }
+        return after.size() > 0;
+    }
+
+    public abstract boolean matchBy(Map<Rulable, Queue<LocalDateTime>> result, Rulable[] rules);
 }

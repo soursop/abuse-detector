@@ -1,31 +1,44 @@
 package com.abuse.module;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
-public class Rules implements Rulable {
-    private final Frequencible[] rules;
+public class Rules extends AbstractRulable {
+    private final String name;
+    private final Rulable[] rules;
     private final Conjunction conjunction;
 
-    public Rules(Frequencible[] rules, Conjunction conjunction) {
+    public Rules(String name, Rulable[] rules, Conjunction conjunction, long duration) {
+        super(duration);
+        this.name = name;
         this.rules = rules;
         this.conjunction = conjunction;
     }
 
+    public static Rules of(String name, Rulable rules) {
+        return of(name, new Rulable[]{rules}, Conjunction.AND);
+    }
+
+    public static Rules of(String name, Rulable[] rules, Conjunction conjunction) {
+        return new Rules(name, rules, conjunction, duration(rules));
+    }
+
     @Override
-    public boolean match(Long event, Map<Enum<?>, Long> result) {
-        Map<Frequencible, Long> frequencies = new HashMap<>();
-        Map<Frequencible, Long> matched = new HashMap<>();
-        for (Frequencible rule : rules) {
-            if (rule.match(event, result)) {
-                Long cnt = frequencies.get(rule);
-                long minus = cnt == null? rule.getFrequency() - 1l : cnt - 1;
-                if (minus == 0) {
-                    matched.put(rule, event);
-                } else {
-                    frequencies.put(rule, minus);
-                }
-            }
-        }
+    public long duration() {
+        return duration(rules);
+    }
+
+    @Override
+    public List<Terminal> terminals() {
+        return terminals(rules);
+    }
+
+    @Override
+    public boolean matchBy(Map<Rulable, Queue<LocalDateTime>> matched) {
         return conjunction.matchBy(matched, rules);
+    }
+
+    public String name() {
+        return name;
     }
 }

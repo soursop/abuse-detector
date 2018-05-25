@@ -1,57 +1,55 @@
 package com.abuse.module;
 
-import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
-public class Sum implements Frequencible {
-    private final Rule[] rules;
+public class Sum extends AbstractRulable implements Terminal {
+    private final Reducible[] rules;
     private final Evaluation evaluation;
-    private final long duration;
     private final long source;
     private final int frequency;
 
-    public Sum(Rule[] rules, Evaluation evaluation, long source) {
+    private Sum(Reducible[] rules, Evaluation evaluation, long source, long duration, int frequency) {
+        super(duration);
         this.rules = rules;
         this.evaluation = evaluation;
-        long duration = 0;
-        int frequency = 0;
-        for (Frequencible rule : rules) {
-            duration = Math.max(duration, rule.getDuration());
-            frequency = Math.max(frequency, rule.getFrequency());
-        }
-        this.duration = duration;
-        this.frequency = frequency;
         this.source = source;
+        this.frequency = frequency;
+    }
+
+    public static Sum of(Reducible[] rules, Evaluation evaluation, long source) {
+        return of(rules, evaluation, source, 1);
+    }
+
+    public static Sum of(Reducible[] rules, Evaluation evaluation, long source, int frequency) {
+        return new Sum(rules, evaluation, source, duration(rules), frequency);
     }
 
     @Override
-    public boolean match(Long event, Map<Enum<?>, Long> result) {
-        Map<Rule, Long> frequencies = new HashMap<>();
-        Map<Frequencible, Long> matched = new HashMap<>();
+    public boolean match(LocalDateTime event, Map<Enum<?>, Long> result) {
         long sum = 0;
-        for (Rule rule : rules) {
-            if (rule.match(event, result)) {
-                Long cnt = frequencies.get(rule);
-                long minus = cnt == null? rule.getFrequency() - 1l : cnt - 1;
+        LocalDateTime now = LocalDateTime.now();
+        for (Reducible rule : rules) {
+            if (rule.match(now, event, result)) {
                 sum += rule.aggregate(result);
-                if (minus == 0) {
-                    matched.put(rule, event);
-                } else {
-                    frequencies.put(rule, minus);
-                }
+            } else {
+                return false;
             }
         }
         return evaluation.match(source, sum);
     }
 
     @Override
-    public boolean valid(Long now, Long event) {
-        return now - event.longValue() <= duration;
+    public boolean matchBy(Map<Rulable, Queue<LocalDateTime>> matched) {
+        return matched.containsKey(this);
     }
 
     @Override
-    public long getDuration() {
-        return duration;
+    public List<Terminal> terminals() {
+        return Arrays.asList(this);
     }
 
     @Override
