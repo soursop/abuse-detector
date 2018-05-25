@@ -15,8 +15,8 @@ public class Rules extends AbstractRulable {
         this.conjunction = conjunction;
     }
 
-    public static Rules of(String name, Rulable rules) {
-        return of(name, new Rulable[]{rules}, Conjunction.AND);
+    public static Rules of(String name, Rulable ... rules) {
+        return of(name, rules, Conjunction.AND);
     }
 
     public static Rules of(String name, Rulable[] rules, Conjunction conjunction) {

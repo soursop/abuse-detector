@@ -20,10 +20,6 @@ public class Utils {
         return log;
     }
 
-//    public long duration() {
-//
-//    }
-
     public static <T> T[] asArray(T ... values) {
         return values;
     }

@@ -29,9 +29,9 @@ public class Rule extends AbstractRulable implements Terminal {
     }
 
     @Override
-    public boolean match(LocalDateTime event, Map<Enum<?>, Long> result) {
+    public boolean match(Map<Enum<?>, Long> result) {
         Long value = result.get(key);
-        return value != null && valid(LocalDateTime.now(), event) && evaluation.match(source, value);
+        return value != null && evaluation.match(source, value);
     }
 
     @Override

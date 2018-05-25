@@ -12,15 +12,14 @@ public class Aggregator {
     private final Terminal[] terminals;
     private final Map<Terminal, Queue<LocalDateTime>> frequencies = new HashMap<>();
 
-    public Aggregator(Rules[] rules, Terminal[] terminals) {
+    private Aggregator(Rules[] rules, Terminal[] terminals) {
         this.rules = rules;
         this.terminals = terminals;
     }
 
-    public void aggregate(LocalDateTime event, Map<Enum<?>, Long> result) {
-        LocalDateTime now = LocalDateTime.now();
+    public void aggregate(LocalDateTime now, LocalDateTime event, Map<Enum<?>, Long> result) {
         for (Terminal rule : terminals) {
-            if (rule.match(event, result)) {
+            if (rule.match(result)) {
                 Queue<LocalDateTime> queue = frequencies.get(rule);
                 if (queue == null) {
                     queue = new PriorityQueue<>();
@@ -28,13 +27,13 @@ public class Aggregator {
                     queue = refresh(now, rule, queue);
                 }
                 queue.add(event);
+                frequencies.put(rule, queue);
             }
         }
     }
 
-    public List<String> match() {
+    public List<String> match(LocalDateTime now) {
         List<String> list = new ArrayList<>();
-        LocalDateTime now = LocalDateTime.now();
         Map<Rulable, Queue<LocalDateTime>> matched = new HashMap<>();
         for (Terminal terminal : terminals) {
             Queue<LocalDateTime> queue = refresh(now, terminal, frequencies.get(terminal));
@@ -62,7 +61,7 @@ public class Aggregator {
         return queue;
     }
 
-    public static Aggregator of(Rules[] rules) {
+    public static Aggregator of(Rules ... rules) {
         List<Terminal> terminals = AbstractRulable.terminals(rules);
         return new Aggregator(rules, terminals.toArray(new Terminal[terminals.size()]));
     }

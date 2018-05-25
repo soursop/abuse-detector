@@ -1,7 +1,6 @@
 package com.abuse.module;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +25,8 @@ public class Metric extends AbstractRulable implements Reducible {
     }
 
     @Override
-    public boolean match(LocalDateTime now, LocalDateTime event, Map<Enum<?>, Long> result) {
-        Long value = result.get(key);
-        return value != null && valid(now, event);
+    public boolean match(Map<Enum<?>, Long> result) {
+        return result.containsKey(key);
     }
 
     @Override

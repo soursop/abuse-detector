@@ -29,11 +29,10 @@ public class Sum extends AbstractRulable implements Terminal {
     }
 
     @Override
-    public boolean match(LocalDateTime event, Map<Enum<?>, Long> result) {
+    public boolean match(Map<Enum<?>, Long> result) {
         long sum = 0;
-        LocalDateTime now = LocalDateTime.now();
         for (Reducible rule : rules) {
-            if (rule.match(now, event, result)) {
+            if (rule.match(result)) {
                 sum += rule.aggregate(result);
             } else {
                 return false;

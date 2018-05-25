@@ -8,6 +8,6 @@ import java.util.Map;
  * @created 2018. 5. 25.
  */
 public interface Terminal extends Rulable {
-    boolean match(LocalDateTime event, Map<Enum<?>, Long> result);
+    boolean match(Map<Enum<?>, Long> result);
     int getFrequency();
 }
