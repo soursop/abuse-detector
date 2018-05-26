@@ -1,5 +1,7 @@
 package com.abuse.module;
 
+import com.abuse.module.types.Type;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,13 +11,13 @@ import java.util.Map;
  */
 public class Utils {
 
-    public static Map<Enum<?>, Long> parsing(Object ... values) {
+    public static Map<Enum<? extends Type>, Long> parsing(Object ... values) {
         int size = Assert.assertPairs(values.length);
-        Map<Enum<?>, Long> log = new HashMap<>();
+        Map<Enum<? extends Type>, Long> log = new HashMap<>();
         for (int i = 0; i < size; i++) {
             int key = 2 * i;
             int value = key + 1;
-            log.put((Enum<?>) values[key], (Long) values[value]);
+            log.put((Enum<? extends Type>) values[key], (Long) values[value]);
         }
         return log;
     }

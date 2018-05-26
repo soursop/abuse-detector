@@ -1,46 +1,37 @@
 package com.abuse.module;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
+import com.abuse.module.types.Type;
+
 import java.util.Map;
-import java.util.Queue;
 
 /**
  * @author soursop
  * @created 2018. 5. 24.
  */
-public class Metric extends AbstractRulable implements Reducible {
-    private final Enum<?> key;
+public class Metric implements Reducible {
+    private final Enum<? extends Type> key;
     private final long sign;
 
-    public Metric(Enum<?> key, long duration) {
-        this(key, 1, duration);
-    }
-
-    public Metric(Enum<?> key, long sign, long duration) {
-        super(duration);
+    private Metric(Enum<? extends Type> key, long sign) {
         this.key = key;
         this.sign = sign;
     }
 
+    public static Metric plus(Enum<? extends Type> key) {
+        return new Metric(key, 1);
+    }
+
+    public static Metric minus(Enum<? extends Type> key) {
+        return new Metric(key, -1);
+    }
+
     @Override
-    public boolean match(Map<Enum<?>, Long> result) {
+    public boolean match(Map<Enum<? extends Type>, Long> result) {
         return result.containsKey(key);
     }
 
     @Override
-    public long aggregate(Map<Enum<?>, Long> result) {
+    public long aggregate(Map<Enum<? extends Type>, Long> result) {
         return sign * result.get(key);
-    }
-
-    @Override
-    public boolean matchBy(Map<Rulable, Queue<LocalDateTime>> matched) {
-        return matched.containsKey(this);
-    }
-
-    @Override
-    public List<Terminal> terminals() {
-        return Collections.emptyList();
     }
 }
