@@ -1,6 +1,6 @@
-package com.abuse.module;
+package com.abuse.rule;
 
-import com.abuse.module.types.Type;
+import com.abuse.types.Type;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -19,7 +19,7 @@ public class Aggregator {
         this.terminals = terminals;
     }
 
-    public void aggregate(LocalDateTime now, LocalDateTime event, Map<Enum<? extends Type>, Long> result) {
+    public synchronized void aggregate(LocalDateTime now, LocalDateTime event, Map<Enum<? extends Type>, Long> result) {
         for (Terminal rule : terminals) {
             if (rule.match(result)) {
                 Queue<LocalDateTime> queue = frequencies.get(rule);
@@ -34,7 +34,7 @@ public class Aggregator {
         }
     }
 
-    public List<String> match(LocalDateTime now) {
+    public synchronized List<String> match(LocalDateTime now) {
         List<String> list = new ArrayList<>();
         Map<Terminal, Queue<LocalDateTime>> matched = new HashMap<>();
 

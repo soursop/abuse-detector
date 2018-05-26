@@ -1,4 +1,4 @@
-package com.abuse.module.types;
+package com.abuse.types;
 
 import org.junit.Test;
 
@@ -14,8 +14,8 @@ public class TypeTest {
 
     @Test
     public void testAccount() {
-        Map<Enum<?>, Long> log = Account.parsing(1111l);
-        assertEquals(log.get(Account.ACCOUNT).longValue(), 1111l);
+        Map<Enum<?>, Long> log = Create.parsing(1111l);
+        assertEquals(log.get(Create.ACCOUNT).longValue(), 1111l);
     }
 
     @Test

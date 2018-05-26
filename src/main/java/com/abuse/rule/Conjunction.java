@@ -1,4 +1,4 @@
-package com.abuse.module;
+package com.abuse.rule;
 
 import java.time.LocalDateTime;
 import java.util.Map;

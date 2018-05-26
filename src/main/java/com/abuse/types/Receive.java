@@ -1,4 +1,4 @@
-package com.abuse.module.types;
+package com.abuse.types;
 
 import java.util.Map;
 

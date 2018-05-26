@@ -1,12 +1,16 @@
-package com.abuse.module.types;
+package com.abuse.types;
+
 
 import java.util.Map;
 
-public enum Charge implements Type {
+/**
+ * @author soursop
+ * @created 2018. 5. 24.
+ */
+public enum Create implements Type {
     ACCOUNT
-    , AMOUNT
-    , BANK_ACCOUNT
     ;
+
     public static Map<Enum<?>, Long> parsing(Long ... values) {
         return Type.parsing(values(), values);
     }

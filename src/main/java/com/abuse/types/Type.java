@@ -1,6 +1,6 @@
-package com.abuse.module.types;
+package com.abuse.types;
 
-import com.abuse.module.Assert;
+import com.abuse.rule.Assert;
 
 import java.util.HashMap;
 import java.util.Map;

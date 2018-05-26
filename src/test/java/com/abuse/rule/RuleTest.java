@@ -1,6 +1,6 @@
-package com.abuse.module;
+package com.abuse.rule;
 
-import com.abuse.module.types.*;
+import com.abuse.types.*;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -8,8 +8,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.abuse.module.Utils.asArray;
-import static com.abuse.module.Utils.parsing;
+import static com.abuse.rule.Utils.asArray;
+import static com.abuse.rule.Utils.parsing;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
@@ -30,7 +30,7 @@ public class RuleTest {
             , Send.TO_ID, 2l
             , Send.AMOUNT, 19500l);
     private Map<Enum<? extends Type>, Long> ACCOUNT = parsing(
-            Account.ACCOUNT, 1111l
+            Create.ACCOUNT, 1111l
     );
     private Metric[] BALANCE = asArray(
             Metric.plus(Send.FROM_BALANCE)
@@ -63,7 +63,7 @@ public class RuleTest {
         LocalDateTime over = now.minus(ONE_HOUR - 1, ChronoUnit.MILLIS);
         LocalDateTime before = now.minus(ONE_HOUR + 2, ChronoUnit.MILLIS);
 
-        Terminal CREATE_DETECT = new Rule(Account.ACCOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 0l, ONE_HOUR, 1);
+        Terminal CREATE_DETECT = new Rule(Create.ACCOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 0l, ONE_HOUR, 1);
         Terminal HIGH_PRICE = new Rule(Charge.AMOUNT, Evaluation.EQUALS, 200000l, ONE_HOUR, 1);
         Terminal LOWER_PRICE = Sum.of(BALANCE, Evaluation.LOWER_THAN_AND_EQUALS, 1000l, 0);
 
@@ -104,7 +104,7 @@ public class RuleTest {
         LocalDateTime invalid = now.minus(SEVEN_DAYS - 1, ChronoUnit.MILLIS);
 
         Terminal OVER_PRICE = new Rule(Receive.AMOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 100000l, SEVEN_DAYS, 5);
-        Terminal CREATE_DETECT = new Rule(Account.ACCOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 0l, SEVEN_DAYS, 1);
+        Terminal CREATE_DETECT = new Rule(Create.ACCOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 0l, SEVEN_DAYS, 1);
 
         Seq rules = Seq.of("RuleB", CREATE_DETECT, OVER_PRICE);
         Aggregator aggregator = Aggregator.of(rules);

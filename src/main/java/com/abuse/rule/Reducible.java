@@ -1,7 +1,7 @@
-package com.abuse.module;
+package com.abuse.rule;
 
 
-import com.abuse.module.types.Type;
+import com.abuse.types.Type;
 
 import java.util.Map;
 

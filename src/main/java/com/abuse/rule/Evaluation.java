@@ -1,4 +1,4 @@
-package com.abuse.module;
+package com.abuse.rule;
 
 public enum Evaluation {
     EQUALS {
