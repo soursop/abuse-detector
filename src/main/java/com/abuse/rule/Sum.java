@@ -2,6 +2,7 @@ package com.abuse.rule;
 
 import com.abuse.types.Type;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class Sum extends AbstractTerminal {
@@ -40,5 +41,12 @@ public class Sum extends AbstractTerminal {
     @Override
     public Sum toLazy() {
         return new Sum(rules, evaluation, source, getDuration(), getFrequency(), true);
+    }
+
+    @Override
+    public String toString() {
+        return "Sum(" + Arrays.toString(rules) +
+                evaluation + ":" + source + "|" + getFrequency()  + "|" + getDuration() +
+                + ')';
     }
 }

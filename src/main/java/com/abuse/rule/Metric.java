@@ -34,4 +34,9 @@ public class Metric implements Reducible {
     public long aggregate(Map<Enum<? extends Type>, Long> result) {
         return sign * result.get(key);
     }
+
+    @Override
+    public String toString() {
+        return (sign < 0? "-" : "") + key;
+    }
 }

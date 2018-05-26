@@ -1,14 +1,13 @@
 package com.abuse.module;
 
+import com.abuse.rule.Aggregator;
+import com.abuse.rule.Rulable;
 import com.abuse.types.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class LocalFraudRepository implements FraudRepository {
@@ -22,8 +21,12 @@ public class LocalFraudRepository implements FraudRepository {
 
     @Override
     public synchronized void add(Long id, Long account, LocalDateTime event, Map<Enum<? extends Type>, Long> log) {
-        register.getOrDefault(id, new Register(repository.findAll()))
-                .add(account, LocalDateTime.now(), event, log);
+        Register register = this.register.get(id);
+        if (register == null) {
+            register = new Register(repository.findAll());
+            this.register.put(id, register);
+        }
+        register.add(account, LocalDateTime.now(), event, log);
     }
 
     @Override
@@ -33,5 +36,18 @@ public class LocalFraudRepository implements FraudRepository {
             return Collections.emptyList();
         }
         return register.findAny(LocalDateTime.now());
+    }
+
+    @Override
+    public Map<Rulable, Queue<LocalDateTime>> status(Long id, Long account) {
+        Register register = this.register.get(id);
+        if (register == null) {
+            return Collections.emptyMap();
+        }
+        Aggregator aggregator = register.findByAccount(account);
+        if (aggregator == null) {
+            return Collections.emptyMap();
+        }
+        return aggregator.getFrequencies();
     }
 }

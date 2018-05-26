@@ -17,8 +17,17 @@ public class Register {
         this.rules = rules;
     }
 
+    public Aggregator findByAccount(Long account) {
+        return accounts.get(account);
+    }
+
     public synchronized void add(Long account, LocalDateTime now, LocalDateTime event, Map<Enum<? extends Type>, Long> log) {
-        accounts.getOrDefault(account, Aggregator.of(rules)).aggregate(now, event, log);
+        Aggregator aggregator = accounts.get(account);
+        if (aggregator == null) {
+            aggregator = Aggregator.of(rules);
+            accounts.put(account, aggregator);
+        }
+        aggregator.aggregate(now, event, log);
     }
 
     public synchronized List<String> findAny(final LocalDateTime now) {

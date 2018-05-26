@@ -66,6 +66,10 @@ public class Aggregator {
         return queue;
     }
 
+    public Map<Rulable, Queue<LocalDateTime>> getFrequencies() {
+        return frequencies;
+    }
+
     public static Aggregator of(Rules ... rules) {
         List<Terminal> terminals = Cons.terminals(rules);
         return new Aggregator(rules, terminals.toArray(new Terminal[terminals.size()]));

@@ -42,7 +42,7 @@ public class TypeTest {
         assertEquals(log.get(Receive.TO_ACCOUNT).longValue(), toAccount);
         assertEquals(log.get(Receive.BEFORE_BALANCE).longValue(), beforeBalance);
         assertEquals(log.get(Receive.FROM_ACCOUNT).longValue(), fromAccount);
-        assertEquals(log.get(Receive.TO_ID).longValue(), toId);
+        assertEquals(log.get(Receive.FROM_ID).longValue(), toId);
         assertEquals(log.get(Receive.AMOUNT).longValue(), amount);
     }
 

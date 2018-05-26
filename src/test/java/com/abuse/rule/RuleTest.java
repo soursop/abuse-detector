@@ -95,7 +95,7 @@ public class RuleTest {
                 Receive.TO_ACCOUNT, 1111l
                 , Receive.BEFORE_BALANCE, 20000l
                 , Receive.FROM_ACCOUNT, 2222l
-                , Receive.TO_ID, 1l
+                , Receive.FROM_ID, 1l
                 , Receive.AMOUNT, 100000l);
 
         LocalDateTime now = LocalDateTime.now();
@@ -133,7 +133,7 @@ public class RuleTest {
                 Receive.TO_ACCOUNT, 1111l
                 , Receive.BEFORE_BALANCE, 20000l
                 , Receive.FROM_ACCOUNT, 2222l
-                , Receive.TO_ID, 1l
+                , Receive.FROM_ID, 1l
                 , Receive.AMOUNT, 50000l);
 
         LocalDateTime now = LocalDateTime.now();

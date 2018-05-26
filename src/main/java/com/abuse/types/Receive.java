@@ -6,7 +6,7 @@ public enum Receive implements Type {
     TO_ACCOUNT
     , BEFORE_BALANCE
     , FROM_ACCOUNT
-    , TO_ID
+    , FROM_ID
     , AMOUNT
     ;
     public static Map<Enum<?>, Long> parsing(Long ... values) {

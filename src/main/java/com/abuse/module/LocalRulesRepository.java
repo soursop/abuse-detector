@@ -26,18 +26,17 @@ public class LocalRulesRepository implements RulesRepository {
         long TWO_HOUR = TimeUnit.HOURS.toMillis(2);
         long SEVEN_DAYS = TimeUnit.DAYS.toMillis(7);
 
-        Metric[] BALANCE = asArray(
+        Terminal CREATE_DETECT_1H = new Rule(Create.ACCOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 0l, ONE_HOUR, 1);
+        Terminal HIGH_PRICE = new Rule(Charge.AMOUNT, Evaluation.EQUALS, 200000l, ONE_HOUR, 1);
+        Terminal LOWER_PRICE = Sum.of(asArray(
                 Metric.plus(Send.FROM_BALANCE)
                 , Metric.minus(Send.AMOUNT)
-        );
-        Terminal CREATE_DETECT1 = new Rule(Create.ACCOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 0l, ONE_HOUR, 1);
-        Terminal HIGH_PRICE = new Rule(Charge.AMOUNT, Evaluation.EQUALS, 200000l, ONE_HOUR, 1);
-        Terminal LOWER_PRICE = Sum.of(BALANCE, Evaluation.LOWER_THAN_AND_EQUALS, 1000l, 0);
-        list.add(Seq.of("RuleA", CREATE_DETECT1, HIGH_PRICE, LOWER_PRICE));
+        ), Evaluation.LOWER_THAN_AND_EQUALS, 1000l, 0);
+        list.add(Seq.of("RuleA", CREATE_DETECT_1H, HIGH_PRICE, LOWER_PRICE));
 
-        Terminal OVER_PRICE10 = new Rule(Receive.AMOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 100000l, SEVEN_DAYS, 5);
-        Terminal CREATE_DETECT7 = new Rule(Create.ACCOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 0l, SEVEN_DAYS, 1);
-        list.add(Seq.of("RuleB", CREATE_DETECT7, OVER_PRICE10));
+        Terminal OVER_PRICE_10 = new Rule(Receive.AMOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 100000l, SEVEN_DAYS, 5);
+        Terminal CREATE_DETECT_7D = new Rule(Create.ACCOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 0l, SEVEN_DAYS, 1);
+        list.add(Seq.of("RuleB", CREATE_DETECT_7D, OVER_PRICE_10));
 
         Terminal OVER_PRICE5 = new Rule(Receive.AMOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 50000l, TWO_HOUR, 3);
         list.add(Cons.of("RuleC", OVER_PRICE5));
