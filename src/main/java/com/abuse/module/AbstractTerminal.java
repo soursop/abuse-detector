@@ -42,7 +42,8 @@ abstract class AbstractTerminal implements Terminal {
         , PROC {
             @Override
             boolean valid(long duration, LocalDateTime now, LocalDateTime event) {
-                return event.until(now, ChronoUnit.MILLIS) <= duration;
+                long diff = event.until(now, ChronoUnit.MILLIS);
+                return diff > -1 && diff <= duration;
             }
         }
         ;

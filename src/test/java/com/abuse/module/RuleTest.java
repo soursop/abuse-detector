@@ -59,7 +59,8 @@ public class RuleTest {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime event = now.minus(ONE_HOUR * 2, ChronoUnit.MILLIS);
         LocalDateTime valid = now.minus(ONE_HOUR, ChronoUnit.MILLIS);
-        LocalDateTime invalid = now.minus(ONE_HOUR - 1, ChronoUnit.MILLIS);
+        LocalDateTime over = now.minus(ONE_HOUR - 1, ChronoUnit.MILLIS);
+        LocalDateTime before = now.minus(ONE_HOUR + 2, ChronoUnit.MILLIS);
 
         Terminal CREATE_DETECT = new Rule(Account.ACCOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 0l, ONE_HOUR, 1);
         Terminal HIGH_PRICE = new Rule(Charge.AMOUNT, Evaluation.EQUALS, 200000l, ONE_HOUR, 1);
@@ -69,9 +70,16 @@ public class RuleTest {
         Aggregator aggregator = Aggregator.of(rules);
         aggregator.aggregate(now, event, ACCOUNT);
         aggregator.aggregate(now, valid, CHARGE);
-        aggregator.aggregate(now, invalid, SEND);
+
+        // 1시간 이후 잔고 1000원 이하
+        aggregator.aggregate(now, over, SEND);
         assertThat(aggregator.match(now), containsInAnyOrder());
 
+        // 20만원 충전 이전에 잔고 1000원 이하
+        aggregator.aggregate(now, before, SEND);
+        assertThat(aggregator.match(now), containsInAnyOrder());
+
+        // 1시간 이내 20만원 충전 이후 잔고 1000원 이하
         aggregator.aggregate(now, valid, SEND);
         assertThat(aggregator.match(now), containsInAnyOrder("RuleA"));
 
@@ -100,12 +108,17 @@ public class RuleTest {
         Seq rules = Seq.of("RuleB", CREATE_DETECT, OVER_PRICE);
         Aggregator aggregator = Aggregator.of(rules);
         aggregator.aggregate(now, event, ACCOUNT);
+
+        // 7일 이내 10만원 이상 4회
         for (int i = 0; i < 4; i++) {
             aggregator.aggregate(now, valid, RECEIVE);
         }
+
+        // 7일 초과후 10만원 이상 1회
         aggregator.aggregate(now, invalid, RECEIVE);
         assertThat(aggregator.match(now), containsInAnyOrder());
 
+        // 7일 이내 4회 + 1회 = 10만원 이상 5회
         aggregator.aggregate(now, valid, RECEIVE);
         assertThat(aggregator.match(now), containsInAnyOrder("RuleB"));
     }
@@ -132,11 +145,11 @@ public class RuleTest {
         for (int i = 0; i < 2; i++) {
             aggregator.aggregate(now, valid, RECEIVE);
         }
-        // before frquency
+        // 2시간 초과 후, 5만원
         aggregator.aggregate(now, invalid, RECEIVE);
         assertThat(aggregator.match(now), containsInAnyOrder());
 
-        // after frequency
+        // 2시간 이내 2회 + 1회 5만원
         aggregator.aggregate(now, valid, RECEIVE);
         assertThat(aggregator.match(now), containsInAnyOrder("RuleC"));
     }
