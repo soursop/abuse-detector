@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import static com.abuse.module.Utils.asArray;
 import static com.abuse.module.Utils.parsing;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -73,11 +74,11 @@ public class RuleTest {
 
         // 1시간 이후 잔고 1000원 이하
         aggregator.aggregate(now, over, SEND);
-        assertThat(aggregator.match(now), containsInAnyOrder());
+        assertThat(aggregator.match(now), empty());
 
         // 20만원 충전 이전에 잔고 1000원 이하
         aggregator.aggregate(now, before, SEND);
-        assertThat(aggregator.match(now), containsInAnyOrder());
+        assertThat(aggregator.match(now), empty());
 
         // 1시간 이내 20만원 충전 이후 잔고 1000원 이하
         aggregator.aggregate(now, valid, SEND);
@@ -116,7 +117,7 @@ public class RuleTest {
 
         // 7일 초과후 10만원 이상 1회
         aggregator.aggregate(now, invalid, RECEIVE);
-        assertThat(aggregator.match(now), containsInAnyOrder());
+        assertThat(aggregator.match(now), empty());
 
         // 7일 이내 4회 + 1회 = 10만원 이상 5회
         aggregator.aggregate(now, valid, RECEIVE);
@@ -147,7 +148,7 @@ public class RuleTest {
         }
         // 2시간 초과 후, 5만원
         aggregator.aggregate(now, invalid, RECEIVE);
-        assertThat(aggregator.match(now), containsInAnyOrder());
+        assertThat(aggregator.match(now), empty());
 
         // 2시간 이내 2회 + 1회 5만원
         aggregator.aggregate(now, valid, RECEIVE);
