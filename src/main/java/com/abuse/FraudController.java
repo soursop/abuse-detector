@@ -11,9 +11,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 import static com.abuse.rule.Utils.parsing;
 
@@ -78,8 +78,8 @@ public class FraudController {
 
     @RequestMapping(value = { "fraud/{userId}" }, method = RequestMethod.GET)
     public Fraud fraud(@PathVariable Long userId) {
-        List<String> found = repository.findById(userId);
-        return new Fraud(userId, found.size() > 0, found);
+        Set<String> found = repository.findById(userId);
+        return new Fraud(userId, found.size() > 0, String.join(",", found));
     }
 
 }

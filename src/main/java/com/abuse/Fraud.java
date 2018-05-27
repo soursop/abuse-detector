@@ -1,13 +1,11 @@
 package com.abuse;
 
-import java.util.List;
-
 public class Fraud {
     private final Long userId;
     private final boolean isFraud;
-    private final List<String> rule;
+    private final String rule;
 
-    public Fraud(Long userId, boolean isFraud, List<String> rule) {
+    public Fraud(Long userId, boolean isFraud, String rule) {
         this.userId = userId;
         this.isFraud = isFraud;
         this.rule = rule;
@@ -21,7 +19,7 @@ public class Fraud {
         return isFraud;
     }
 
-    public List<String> getRule() {
+    public String getRule() {
         return rule;
     }
 }

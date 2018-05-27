@@ -59,7 +59,7 @@ abstract class AbstractTerminal implements Terminal {
     }
 
     @Override
-    public int getFrequency() {
+    public int frequency() {
         return frequency;
     }
 
@@ -79,7 +79,7 @@ abstract class AbstractTerminal implements Terminal {
     }
 
     @Override
-    public long getDuration() {
+    public long duration() {
         return duration;
     }
 
@@ -107,6 +107,6 @@ abstract class AbstractTerminal implements Terminal {
         while (iterator.hasNext() && !post.valid(duration, iterator.next(), last)) {
             iterator.remove();
         }
-        return after.size() >= getFrequency();
+        return after.size() >= frequency();
     }
 }

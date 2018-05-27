@@ -36,13 +36,13 @@ public class Rule extends AbstractTerminal {
 
     @Override
     public Rule toLazy() {
-        return new Rule(key, evaluation, source, getDuration(), getFrequency(), true);
+        return new Rule(key, evaluation, source, duration(), frequency(), true);
     }
 
     @Override
     public String toString() {
         return "Rule(" + key + ":" +
-            evaluation + ":" + source + "|" + getFrequency()  + "|" + getDuration() +
+            evaluation + ":" + source + "|" + frequency()  + "|" + duration() +
                 ')';
     }
 }

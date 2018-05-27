@@ -40,7 +40,7 @@ public class Aggregator {
 
         for (Terminal terminal : terminals) {
             Queue<LocalDateTime> queue = refresh(now, terminal, frequencies.get(terminal));
-            if (queue == null || terminal.getFrequency() > queue.size()) {
+            if (queue == null || terminal.frequency() > queue.size()) {
                 continue;
             }
             Queue<LocalDateTime> agg = new PriorityQueue<>(terminal.comparator());

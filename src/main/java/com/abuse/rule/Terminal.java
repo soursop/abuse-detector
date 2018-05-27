@@ -15,8 +15,8 @@ public interface Terminal extends Rulable {
     boolean match(Map<Enum<? extends Type>, Long> result);
     boolean matchBy(long duration, Rulable before, Map<Terminal, Queue<LocalDateTime>> matched);
     boolean valid(LocalDateTime now, LocalDateTime event);
-    long getDuration();
-    int getFrequency();
+    long duration();
+    int frequency();
     Terminal toLazy();
     Comparator<LocalDateTime> comparator();
 }

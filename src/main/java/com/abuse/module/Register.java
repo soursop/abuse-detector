@@ -4,10 +4,7 @@ import com.abuse.rule.*;
 import com.abuse.types.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Register {
     private final Rules[] rules;
@@ -30,8 +27,8 @@ public class Register {
         aggregator.aggregate(now, event, log);
     }
 
-    public synchronized List<String> findAny(final LocalDateTime now) {
-        List<String> result = new ArrayList<>();
+    public synchronized Set<String> findAny(final LocalDateTime now) {
+        Set<String> result = new HashSet<>();
         for (Aggregator aggregator : accounts.values()) {
             result.addAll(aggregator.match(now));
         }

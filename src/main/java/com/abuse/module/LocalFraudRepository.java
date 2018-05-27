@@ -30,10 +30,10 @@ public class LocalFraudRepository implements FraudRepository {
     }
 
     @Override
-    public synchronized List<String> findById(Long id) {
+    public synchronized Set<String> findById(Long id) {
         Register register = this.register.get(id);
         if (register == null) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
         return register.findAny(LocalDateTime.now());
     }
