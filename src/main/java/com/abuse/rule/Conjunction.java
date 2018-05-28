@@ -50,7 +50,7 @@ public interface Conjunction<T extends Rulable> {
             return convert;
         }
 
-        private boolean search(Terminal[] rules, LinkedList<LocalDateTime>... queues) {
+        private boolean search(Terminal[] rules, LinkedList<LocalDateTime>[] queues) {
             int idx = 0;
             while (!queues[0].isEmpty()) {
                 if (idx + 1 >= queues.length) {
@@ -70,7 +70,7 @@ public interface Conjunction<T extends Rulable> {
             return false;
         }
 
-        private boolean validate(int idx, Terminal[] rules, LinkedList<LocalDateTime> result, LinkedList<LocalDateTime>... queues) {
+        private boolean validate(int idx, Terminal[] rules, LinkedList<LocalDateTime> result, LinkedList<LocalDateTime>[] queues) {
             if (idx == queues.length) {
 //                System.out.println(result);
                 return true;
