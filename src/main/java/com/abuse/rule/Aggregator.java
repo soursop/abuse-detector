@@ -59,9 +59,8 @@ public class Aggregator {
         if (queue == null) {
             return null;
         }
-        Iterator<LocalDateTime> iterator = queue.iterator();
-        while (iterator.hasNext() && !rule.valid(now, iterator.next())) {
-            iterator.remove();
+        while (!queue.isEmpty() && !rule.valid(now, queue.peek())) {
+            queue.remove();
         }
         return queue;
     }
