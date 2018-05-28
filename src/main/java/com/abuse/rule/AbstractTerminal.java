@@ -47,7 +47,7 @@ abstract class AbstractTerminal implements Terminal {
             }
         }
         ;
-        abstract boolean valid(long duration, LocalDateTime now, LocalDateTime event);
+        abstract boolean valid(long duration, LocalDateTime bigger, LocalDateTime smaller);
     }
 
     protected AbstractTerminal(long duration, int frequency, boolean isLazy) {

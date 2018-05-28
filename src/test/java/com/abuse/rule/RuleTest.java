@@ -36,7 +36,7 @@ public class RuleTest {
 
         Terminal CREATE_DETECT = new Rule(Create.ACCOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 0l, ONE_HOUR, 1);
         Terminal HIGH_PRICE = new Rule(Charge.AMOUNT, Evaluation.EQUALS, 200_000l, ONE_HOUR, 1);
-        Terminal LOWER_PRICE = Sum.of(BALANCE, Evaluation.LOWER_THAN_AND_EQUALS, 1000l, 0);
+        Terminal LOWER_PRICE = Sum.of(BALANCE, Evaluation.LOWER_THAN_AND_EQUALS, 1000l, Long.MAX_VALUE);
 
         Seq rules = Seq.of("RuleA", CREATE_DETECT, HIGH_PRICE, LOWER_PRICE);
         Aggregator aggregator = Aggregator.of(rules);

@@ -33,10 +33,10 @@ public interface Conjunction<T extends Rulable> {
                 return false;
             }
             for (int i = 1; i < rules.length; i++) {
-                if (!rules[i].matchBy(rules[i].duration(), rules[i - 1], result)) {
+                if (i > 1 && !rules[i].matchBy(rules[0].duration(), rules[0], result)) {
                     return false;
                 }
-                if (i > 1 && !rules[i].matchBy(rules[0].duration(), rules[0], result)) {
+                if (!rules[i].matchBy(rules[i].duration(), rules[i - 1], result)) {
                     return false;
                 }
             }

@@ -31,7 +31,7 @@ public class LocalRulesRepository implements RulesRepository {
         Terminal LOWER_PRICE = Sum.of(asArray(
                 Metric.plus(Send.FROM_BALANCE)
                 , Metric.minus(Send.AMOUNT)
-        ), Evaluation.LOWER_THAN_AND_EQUALS, 1000l, 0);
+        ), Evaluation.LOWER_THAN_AND_EQUALS, 1000l, Long.MAX_VALUE);
         list.add(Seq.of("RuleA", CREATE_DETECT_1H, HIGH_PRICE, LOWER_PRICE));
 
         Terminal OVER_PRICE_10 = new Rule(Receive.AMOUNT, Evaluation.GREATER_THAN_AND_EQUALS, 100000l, SEVEN_DAYS, 5);
