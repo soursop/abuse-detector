@@ -90,6 +90,7 @@ public interface Conjunction<T extends Rulable> {
                         return true;
                     } else {
                         next.removeFirst();
+                        cnt = cnt - 1;
                     }
                 }
             }

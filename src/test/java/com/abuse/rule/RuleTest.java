@@ -51,10 +51,9 @@ public class RuleTest {
         aggregator.aggregate(now, time.within(-1l), SEND_500);
         assertThat(aggregator.match(now), empty());
 
-        // 1시간 이내 20만원 충전 이후 잔고 1000원 이하
-        aggregator.aggregate(now, time.within(), SEND_500);
+        // 1000원 이하가 된 로그 이전에, 20만원이 충전 로그 추가
+        aggregator.aggregate(now, time.within(-2l), CHARGE_200_000);
         assertThat(aggregator.match(now), containsInAnyOrder("RuleA"));
-
     }
 
     /**
