@@ -1,17 +1,18 @@
 package com.abuse.rule;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 
 public interface Conjunction<T extends Rulable> {
 
-    boolean matchBy(Map<Terminal, Queue<LocalDateTime>> result, T[] rules);
+    boolean matchBy(Map<Terminal, LinkedList<LocalDateTime>> result, T[] rules);
     T[] convert(T[] input);
 
     Conjunction<Rulable> AND = new Conjunction<Rulable>() {
         @Override
-        public boolean matchBy(Map<Terminal, Queue<LocalDateTime>> result, Rulable[] rules) {
+        public boolean matchBy(Map<Terminal, LinkedList<LocalDateTime>> result, Rulable[] rules) {
             for (Rulable rule : rules) {
                 if (rule.matchBy(result) == false) {
                     return false;
@@ -28,19 +29,16 @@ public interface Conjunction<T extends Rulable> {
     ;
     Conjunction<Terminal> AFTER = new Conjunction<Terminal>() {
         @Override
-        public boolean matchBy(Map<Terminal, Queue<LocalDateTime>> result, Terminal[] rules) {
-            if (rules.length < 1 || !rules[0].matchBy(result)) {
-                return false;
-            }
-            for (int i = 1; i < rules.length; i++) {
-                if (i > 1 && !rules[i].matchBy(rules[0].duration(), rules[0], result)) {
+        public boolean matchBy(Map<Terminal, LinkedList<LocalDateTime>> result, Terminal[] rules) {
+            LinkedList<LocalDateTime>[] queues = new LinkedList[rules.length];
+            for(int i = 0; i < rules.length; i++) {
+                LinkedList<LocalDateTime> queue = result.get(rules[i]);
+                if (queue == null) {
                     return false;
                 }
-                if (!rules[i].matchBy(rules[i].duration(), rules[i - 1], result)) {
-                    return false;
-                }
+                queues[i] = queue;
             }
-            return true;
+            return search(rules, queues);
         }
 
         @Override
@@ -50,6 +48,57 @@ public interface Conjunction<T extends Rulable> {
                 convert[i] = rules[i].toLazy();
             }
             return convert;
+        }
+
+        private boolean search(Terminal[] rules, LinkedList<LocalDateTime>... queues) {
+            int idx = 0;
+            while (!queues[0].isEmpty()) {
+                if (idx + 1 >= queues.length) {
+                    if (validate(0, rules, new LinkedList<>(), queues)) {
+                        return true;
+                    }
+                    queues[0].remove();
+                    idx = 0;
+                } else {
+                    LocalDateTime head = queues[idx].peek();
+                    while (!queues[idx + 1].isEmpty() && head.isAfter(queues[idx + 1].peek())) {
+                        queues[idx + 1].remove();
+                    }
+                    idx = idx + 1;
+                }
+            }
+            return false;
+        }
+
+        private boolean validate(int idx, Terminal[] rules, LinkedList<LocalDateTime> result, LinkedList<LocalDateTime>... queues) {
+            if (idx == queues.length) {
+//                System.out.println(result);
+                return true;
+            }
+            LinkedList<LocalDateTime> next = new LinkedList<>(result);
+            int cnt = 0;
+            for (LocalDateTime date : queues[idx]) {
+                if (result.size() > 0
+                        && (invalid(rules[idx].duration(), date, result.getLast())
+                        || invalid(rules[0].duration(), date, result.peek()))) {
+                    return false;
+                }
+                next.add(date);
+                cnt = cnt + 1;
+                if (cnt >= rules[idx].frequency()) {
+                    if (validate(idx + 1, rules, next, queues)) {
+                        return true;
+                    } else {
+                        next.removeFirst();
+                    }
+                }
+            }
+            return false;
+        }
+
+        private boolean invalid(long duration, LocalDateTime bigger, LocalDateTime smaller) {
+            long diff = smaller.until(bigger, ChronoUnit.MILLIS);
+            return diff < 0 || diff > duration;
         }
     }
     ;

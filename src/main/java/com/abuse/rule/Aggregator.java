@@ -36,15 +36,15 @@ public class Aggregator {
 
     public synchronized List<String> match(LocalDateTime now) {
         List<String> list = new ArrayList<>();
-        Map<Terminal, Queue<LocalDateTime>> matched = new HashMap<>();
+        Map<Terminal, LinkedList<LocalDateTime>> matched = new HashMap<>();
 
         for (Terminal terminal : terminals) {
             Queue<LocalDateTime> queue = refresh(now, terminal, frequencies.get(terminal));
             if (queue == null || terminal.frequency() > queue.size()) {
                 continue;
             }
-            PriorityQueue<LocalDateTime> copy = new PriorityQueue<>(terminal.comparator());
-            copy.addAll(queue);
+            LinkedList<LocalDateTime> copy = new LinkedList<>(queue);
+            Collections.sort(copy);
             matched.put(terminal, copy);
         }
         for (Rules rule : rules) {

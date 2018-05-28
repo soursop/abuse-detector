@@ -28,7 +28,7 @@ public class Cons implements Rules {
     }
 
     @Override
-    public boolean matchBy(Map<Terminal, Queue<LocalDateTime>> matched) {
+    public boolean matchBy(Map<Terminal, LinkedList<LocalDateTime>> matched) {
         return conjunction.matchBy(matched, rules);
     }
 
