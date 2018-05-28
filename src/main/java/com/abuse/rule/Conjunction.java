@@ -75,8 +75,7 @@ public interface Conjunction<T extends Rulable> {
 //                System.out.println(result);
                 return true;
             }
-            LinkedList<LocalDateTime> next = new LinkedList<>(result);
-            int cnt = 0;
+            LinkedList<LocalDateTime> next = new LinkedList<>();
             for (LocalDateTime date : queues[idx]) {
                 if (result.size() > 0
                         && (invalid(rules[idx].duration(), date, result.getLast())
@@ -84,13 +83,13 @@ public interface Conjunction<T extends Rulable> {
                     return false;
                 }
                 next.add(date);
-                cnt = cnt + 1;
-                if (cnt >= rules[idx].frequency()) {
-                    if (validate(idx + 1, rules, next, queues)) {
+                if (next.size() >= rules[idx].frequency()) {
+                    LinkedList<LocalDateTime> queue = new LinkedList<>(result);
+                    queue.add(next.getLast());
+                    if (validate(idx + 1, rules, queue, queues)) {
                         return true;
                     } else {
                         next.removeFirst();
-                        cnt = cnt - 1;
                     }
                 }
             }
