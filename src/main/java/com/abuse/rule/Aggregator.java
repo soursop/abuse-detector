@@ -43,9 +43,13 @@ public class Aggregator {
             if (queue == null || terminal.frequency() > queue.size()) {
                 continue;
             }
-            Queue<LocalDateTime> agg = new PriorityQueue<>(terminal.comparator());
-            agg.addAll(queue);
-            matched.put(terminal, agg);
+            PriorityQueue<LocalDateTime> copy = new PriorityQueue<>(terminal.comparator());
+            copy.addAll(queue);
+            LinkedList<LocalDateTime> link = new LinkedList<>();
+            while (!copy.isEmpty()) {
+                link.add(copy.remove());
+            }
+            matched.put(terminal, link);
         }
         for (Rules rule : rules) {
             if (rule.matchBy(matched)) {

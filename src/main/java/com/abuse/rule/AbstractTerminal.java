@@ -35,14 +35,14 @@ abstract class AbstractTerminal implements Terminal {
     private enum Handler {
         NONE {
             @Override
-            boolean valid(long duration, LocalDateTime now, LocalDateTime event) {
+            boolean valid(long duration, LocalDateTime bigger, LocalDateTime smaller) {
                 return true;
             }
         }
         , PROC {
             @Override
-            boolean valid(long duration, LocalDateTime now, LocalDateTime event) {
-                long diff = event.until(now, ChronoUnit.MILLIS);
+            boolean valid(long duration, LocalDateTime bigger, LocalDateTime smaller) {
+                long diff = smaller.until(bigger, ChronoUnit.MILLIS);
                 return diff > -1 && diff <= duration;
             }
         }
@@ -103,9 +103,8 @@ abstract class AbstractTerminal implements Terminal {
 
     private boolean isWithin(long duration, Queue<LocalDateTime> before, Queue<LocalDateTime> after) {
         final LocalDateTime last = before.peek();
-        Iterator<LocalDateTime> iterator = after.iterator();
-        while (iterator.hasNext() && !post.valid(duration, iterator.next(), last)) {
-            iterator.remove();
+        while (!after.isEmpty() && !post.valid(duration, after.peek(), last)) {
+            after.remove();
         }
         return after.size() >= frequency();
     }
