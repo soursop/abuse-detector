@@ -45,11 +45,7 @@ public class Aggregator {
             }
             PriorityQueue<LocalDateTime> copy = new PriorityQueue<>(terminal.comparator());
             copy.addAll(queue);
-            LinkedList<LocalDateTime> link = new LinkedList<>();
-            while (!copy.isEmpty()) {
-                link.add(copy.remove());
-            }
-            matched.put(terminal, link);
+            matched.put(terminal, copy);
         }
         for (Rules rule : rules) {
             if (rule.matchBy(matched)) {
